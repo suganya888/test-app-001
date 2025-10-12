@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <!-- Bootstrap CSS CDN for basic styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+
+        .calculator {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 320px;
+            text-align: center;
+        }
+
+        .calculator-display {
+            background-color: #222;
+            color: #fff;
+            font-size: 3em;
+            padding: 20px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: right;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            font-weight: 300;
+        }
+
+        .calculator-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .btn {
+            width: 100%;
+            height: 60px;
+            font-size: 1.8em;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-number, .btn-decimal {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-number:hover, .btn-decimal:hover {
+            background-color: #d0d0d0;
+        }
+
+        .btn-operator {
+            background-color: #ff9500;
+            color: #fff;
+        }
+
+        .btn-operator:hover {
+            background-color: #e08500;
+        }
+
+        .btn-clear {
+            background-color: #d9534f;
+            color: #fff;
+        }
+
+        .btn-clear:hover {
+            background-color: #c9302c;
+        }
+
+        .btn-equals {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .btn-equals:hover {
+            background-color: #218838;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 400px) {
+            .calculator {
+                width: 95%;
+                padding: 15px;
+            }
+            .calculator-display {
+                font-size: 2.5em;
+                height: 70px;
+            }
+            .btn {
+                height: 50px;
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!--
+MIT License
+
+Copyright (c) 2023 Your Name / OpenAI
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<!--
+README: Simple Calculator App
+
+Description:
+This is a minimalist, single-page web application that functions as a basic arithmetic calculator.
+It supports addition, subtraction, multiplication, and division operations.
+Designed for simplicity and ease of use, it provides a clean interface for quick calculations.
+
+Features:
+- Basic arithmetic operations: Add, Subtract, Multiply, Divide.
+- Clear function to reset the calculator.
+- Responsive design for various screen sizes.
+- Error handling for invalid operations (e.g., division by zero).
+
+How to Use:
+1. Enter the first number using the number buttons (0-9).
+2. Select an operator (+, -, *, /).
+3. Enter the second number.
+4. Press the '=' button to see the result.
+5. Use the 'C' button to clear the current input and reset the calculator.
+
+This application is self-contained in a single HTML file, embedding all necessary CSS and JavaScript.
+It is ready for deployment to platforms like GitHub Pages.
+-->
+
+    <div class="calculator">
+        <div class="calculator-display" id="calculator-display">0</div>
+        <div class="calculator-buttons">
+            <!-- First row: Clear and operators -->
+            <button type="button" class="btn btn-clear" id="clear-button" style="grid-column: span 4;">C</button>
+            
+            <!-- Second row: Numbers and / -->
+            <button type="button" class="btn btn-number" data-value="7">7</button>
+            <button type="button" class="btn btn-number" data-value="8">8</button>
+            <button type="button" class="btn btn-number" data-value="9">9</button>
+            <button type="button" class="btn btn-operator" data-operator="/">&divide;</button>
+
+            <!-- Third row: Numbers and * -->
+            <button type="button" class="btn btn-number" data-value="4">4</button>
+            <button type="button" class="btn btn-number" data-value="5">5</button>
+            <button type="button" class="btn btn-number" data-value="6">6</button>
+            <button type="button" class="btn btn-operator" data-operator="*">&times;</button>
+
+            <!-- Fourth row: Numbers and - -->
+            <button type="button" class="btn btn-number" data-value="1">1</button>
+            <button type="button" class="btn btn-number" data-value="2">2</button>
+            <button type="button" class="btn btn-number" data-value="3">3</button>
+            <button type="button" class="btn btn-operator" data-operator="-">-</button>
+
+            <!-- Fifth row: 0, ., =, + -->
+            <button type="button" class="btn btn-number" data-value="0">0</button>
+            <button type="button" class="btn btn-decimal" data-value=".">.</button>
+            <button type="button" class="btn btn-equals" id="equals-button">=</button>
+            <button type="button" class="btn btn-operator" data-operator="+">+</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('calculator-display');
+        const buttons = document.querySelector('.calculator-buttons');
+
+        let displayValue = '0';
+        let firstOperand = null;
+        let operator = null;
+        let waitingForSecondOperand = false;
+
+        function updateDisplay() {
+            display.textContent = displayValue;
+        }
+
+        function inputDigit(digit) {
+            if (waitingForSecondOperand) {
+                displayValue = digit;
+                waitingForSecondOperand = false;
+            } else {
+                displayValue = displayValue === '0' ? digit : displayValue + digit;
+            }
+            updateDisplay();
+        }
+
+        function inputDecimal(dot) {
+            if (waitingForSecondOperand) {
+                displayValue = '0.';
+                waitingForSecondOperand = false;
+                updateDisplay();
+                return;
+            }
+            if (!displayValue.includes(dot)) {
+                displayValue += dot;
+            }
+            updateDisplay();
+        }
+
+        function handleOperator(nextOperator) {
+            const inputValue = parseFloat(displayValue);
+
+            if (operator && waitingForSecondOperand) { // If an operator is already selected and we're waiting for the second operand, just change the operator.
+                operator = nextOperator;
+                return;
+            }
+
+            if (firstOperand === null) {
+                firstOperand = inputValue;
+            } else if (operator) { // If there's a first operand and an operator, calculate the result
+                const result = operate(firstOperand, inputValue, operator);
+                displayValue = String(result);
+                firstOperand = result;
+            }
+
+            waitingForSecondOperand = true;
+            operator = nextOperator;
+            updateDisplay();
+        }
+
+        function operate(num1, num2, op) {
+            switch (op) {
+                case '+': return num1 + num2;
+                case '-': return num1 - num2;
+                case '*': return num1 * num2;
+                case '/': 
+                    if (num2 === 0) {
+                        return 'Error'; // Division by zero error handling
+                    }
+                    return num1 / num2;
+                default: return num2;
+            }
+        }
+
+        function resetCalculator() {
+            displayValue = '0';
+            firstOperand = null;
+            operator = null;
+            waitingForSecondOperand = false;
+            updateDisplay();
+        }
+
+        buttons.addEventListener('click', (event) => {
+            const { target } = event;
+
+            if (!target.matches('button')) {
+                return; // Ignore clicks not on buttons
+            }
+
+            if (target.classList.contains('btn-operator')) {
+                handleOperator(target.dataset.operator);
+                return;
+            }
+
+            if (target.classList.contains('btn-number')) {
+                inputDigit(target.dataset.value);
+                return;
+            }
+
+            if (target.classList.contains('btn-decimal')) {
+                inputDecimal(target.dataset.value);
+                return;
+            }
+
+            if (target.id === 'clear-button') {
+                resetCalculator();
+                return;
+            }
+
+            if (target.id === 'equals-button') {
+                if (firstOperand === null || operator === null || waitingForSecondOperand) {
+                    // Do nothing if there's no full operation to compute or if only an operator has been pressed
+                    return;
+                }
+                const inputValue = parseFloat(displayValue);
+                const result = operate(firstOperand, inputValue, operator);
+                if (result === 'Error') {
+                    displayValue = 'Error';
+                } else {
+                    displayValue = String(result);
+                }
+                
+                firstOperand = null; // Reset for next calculation
+                operator = null;
+                waitingForSecondOperand = false;
+                updateDisplay();
+                return;
+            }
+        });
+
+        // Initialize display on load
+        updateDisplay();
+    </script>
+</body>
+</html>
