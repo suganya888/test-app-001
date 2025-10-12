@@ -1,3 +1,2 @@
-# test-app-001
-
-Generated application for test-app-001
+bash
+    git clone https://github.com/suganya888/test-app-001.git
