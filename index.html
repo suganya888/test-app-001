@@ -124,22 +124,28 @@
     <div class="calculator">
         <input type="text" id="display" value="0" readonly>
         <button class="btn clear" id="clear">C</button>
+        <button class="btn operator" id="sqrt">√</button>
+        <button class="btn operator" id="percent">%</button>
         <button class="btn operator" id="divide">/</button>
-        <button class="btn operator" id="multiply">*</button>
+
         <button class="btn num" id="seven">7</button>
         <button class="btn num" id="eight">8</button>
         <button class="btn num" id="nine">9</button>
-        <button class="btn operator" id="subtract">-</button>
+        <button class="btn operator" id="multiply">*</button>
+
         <button class="btn num" id="four">4</button>
         <button class="btn num" id="five">5</button>
         <button class="btn num" id="six">6</button>
-        <button class="btn operator" id="add">+</button>
+        <button class="btn operator" id="subtract">-</button>
+
         <button class="btn num" id="one">1</button>
         <button class="btn num" id="two">2</button>
         <button class="btn num" id="three">3</button>
-        <button class="btn equals" id="equals">=</button>
+        <button class="btn operator" id="add">+</button>
+
         <button class="btn num double" id="zero">0</button>
         <button class="btn" id="decimal">.</button>
+        <button class="btn equals" id="equals">=</button>
     </div>
 
     <script>
@@ -228,6 +234,54 @@
             updateDisplay();
         }
 
+        function calculateSquareRoot() {
+            let num = parseFloat(currentInput);
+            if (isNaN(num)) {
+                currentInput = 'Error';
+            } else if (num < 0) {
+                currentInput = 'Error: Neg Sqrt';
+            } else {
+                currentInput = String(Math.sqrt(num));
+            }
+            previousInput = ''; // Clear previous state as sqrt is a unary operation
+            operator = null;
+            resetDisplay = true;
+            updateDisplay();
+        }
+
+        function calculatePercentage() {
+            let num = parseFloat(currentInput);
+            if (isNaN(num)) {
+                currentInput = 'Error';
+                previousInput = '';
+                operator = null;
+                resetDisplay = true;
+                updateDisplay();
+                return;
+            }
+
+            if (operator === null) {
+                // If no operator, treat as X / 100
+                currentInput = String(num / 100);
+            } else {
+                // If an operator is present, calculate X % of previousInput
+                const prev = parseFloat(previousInput);
+                if (isNaN(prev)) {
+                    currentInput = 'Error';
+                    previousInput = '';
+                    operator = null;
+                    resetDisplay = true;
+                    updateDisplay();
+                    return;
+                }
+                // Calculate the percentage value relative to previousInput
+                const percentageValue = (prev * num) / 100;
+                currentInput = String(percentageValue);
+            }
+            resetDisplay = true;
+            updateDisplay();
+        }
+
         function clearCalculator() {
             currentInput = '0';
             previousInput = '';
@@ -241,12 +295,17 @@
         });
 
         document.querySelectorAll('.btn.operator').forEach(button => {
-            button.addEventListener('click', () => chooseOperator(button.textContent));
+            // Exclude sqrt and percent from standard operator handling
+            if (button.id !== 'sqrt' && button.id !== 'percent') {
+                button.addEventListener('click', () => chooseOperator(button.textContent));
+            }
         });
 
         document.getElementById('equals').addEventListener('click', calculate);
         document.getElementById('clear').addEventListener('click', clearCalculator);
         document.getElementById('decimal').addEventListener('click', appendDecimal);
+        document.getElementById('sqrt').addEventListener('click', calculateSquareRoot);
+        document.getElementById('percent').addEventListener('click', calculatePercentage);
 
         updateDisplay();
     </script>
