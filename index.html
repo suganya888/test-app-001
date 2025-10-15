@@ -3,380 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A simple, functional calculator web application for basic arithmetic operations.">
-    <meta name="license" content="MIT">
-    <title>Simple Calculator App</title>
-    <style>
-        :root {
-            --calculator-bg: #282c34;
-            --display-bg: #1e2127;
-            --button-bg: #3c424e;
-            --button-hover-bg: #5a6270;
-            --operator-bg: #f59e0b;
-            --operator-hover-bg: #d97706;
-            --equals-bg: #10b981;
-            --equals-hover-bg: #059669;
-            --clear-bg: #ef4444;
-            --clear-hover-bg: #dc2626;
-            --text-color: #e2e8f0;
-            --display-text-color: #ffffff;
-            --border-radius: 10px;
-            --gap: 10px;
-        }
+    <title>Simple Calculator</title>
+    <!--
+    MIT License
 
+    Copyright (c) 2023 Your Name
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+    -->
+    <!--
+    # Simple Calculator App
+
+    A minimalist single-page web application providing basic arithmetic operations.
+
+    ## Features
+    - Addition, Subtraction, Multiplication, Division
+    - Clear functionality
+    - Decimal support
+    - Error handling for division by zero
+    - Responsive and clean user interface
+
+    ## How to Use
+    1. Enter numbers using the number buttons.
+    2. Select an operation (+, -, *, /).
+    3. Enter the next number.
+    4. Press '=' to see the result.
+    5. Use 'C' to clear the display and reset the calculator.
+
+    ## Technologies Used
+    - HTML5
+    - CSS3
+    - JavaScript
+
+    ## License
+    This project is open-source and available under the MIT License.
+    -->
+    <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial', sans-serif;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #1a1c20;
-            color: var(--text-color);
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .calculator-app {
+            background-color: #3a4750;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             padding: 20px;
-            box-sizing: border-box;
+            width: 320px;
         }
 
-        .calculator-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .calculator {
-            background-color: var(--calculator-bg);
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            padding: 20px;
-            max-width: 360px;
-            width: 100%;
-        }
-
-        #display {
-            width: calc(100% - 20px); /* Adjust for padding */
-            height: 70px;
-            background-color: var(--display-bg);
+        #calculator-display {
+            width: calc(100% - 20px);
+            height: 60px;
+            background-color: #222831;
             border: none;
-            border-radius: var(--border-radius);
-            margin-bottom: var(--gap);
-            font-size: 2.8em;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            color: #eeeeee;
             text-align: right;
             padding: 0 10px;
-            color: var(--display-text-color);
             box-sizing: border-box;
-            outline: none;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: clip;
         }
 
-        .buttons {
+        .calculator-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: var(--gap);
+            gap: 10px;
         }
 
-        button {
-            padding: 20px 0;
-            font-size: 1.5em;
+        .calculator-buttons button {
+            width: 100%;
+            height: 60px;
+            font-size: 1.8em;
             border: none;
-            border-radius: var(--border-radius);
+            border-radius: 5px;
             cursor: pointer;
-            background-color: var(--button-bg);
-            color: var(--text-color);
-            transition: background-color 0.2s ease, transform 0.1s ease;
+            background-color: #4a5c6a;
+            color: #eeeeee;
+            transition: background-color 0.2s ease;
             outline: none;
         }
 
-        button:hover {
-            background-color: var(--button-hover-bg);
-            transform: translateY(-2px);
+        .calculator-buttons button:hover {
+            background-color: #5c7081;
         }
 
-        button:active {
-            transform: translateY(0);
+        .calculator-buttons button:active {
+            background-color: #3b4b58;
         }
 
-        .operator {
-            background-color: var(--operator-bg);
-            color: #fff;
+        .btn-operator {
+            background-color: #f77f00;
         }
 
-        .operator:hover {
-            background-color: var(--operator-hover-bg);
+        .btn-operator:hover {
+            background-color: #ff9d33;
         }
 
-        .equals {
-            background-color: var(--equals-bg);
-            color: #fff;
-            grid-row: span 2; /* Make equals button span 2 rows */
+        .btn-operator:active {
+            background-color: #d16b00;
         }
 
-        .equals:hover {
-            background-color: var(--equals-hover-bg);
+        #equals-btn {
+            background-color: #00bcd4;
+            grid-column: span 2;
         }
 
-        .clear {
-            background-color: var(--clear-bg);
-            color: #fff;
+        #equals-btn:hover {
+            background-color: #33d0e4;
         }
 
-        .clear:hover {
-            background-color: var(--clear-hover-bg);
+        #equals-btn:active {
+            background-color: #00a4b8;
         }
 
-        button[value="0"] {
-            grid-column: span 2; /* Make zero button span 2 columns */
+        #clear-btn {
+            background-color: #e63946;
         }
 
-        /* Specific grid placement for equals and plus to ensure layout */
-        .buttons button:nth-child(8) { /* The '+' operator */
-            grid-row: 2 / span 2;
-            grid-column: 4 / 5;
-        }
-        .buttons button:nth-child(15) { /* The '=' operator */
-            grid-row: 4 / span 2;
-            grid-column: 4 / 5;
+        #clear-btn:hover {
+            background-color: #f0616b;
         }
 
-        .footer {
-            margin-top: 30px;
-            font-size: 0.9em;
-            text-align: center;
-            color: #9ca3af;
-            max-width: 600px;
-            line-height: 1.5;
+        #clear-btn:active {
+            background-color: #cc2a36;
         }
 
-        .footer p {
-            margin: 0 0 10px 0;
-        }
-
-        .footer details {
-            margin-top: 15px;
-            background-color: #282c34;
-            border-radius: var(--border-radius);
-            padding: 15px;
-            text-align: left;
-        }
-
-        .footer summary {
-            cursor: pointer;
-            font-weight: bold;
-            color: var(--operator-bg);
-            margin-bottom: 10px;
-        }
-
-        .footer pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-size: 0.8em;
-            background-color: #1e2127;
-            padding: 10px;
-            border-radius: 5px;
-            overflow-x: auto;
-            color: #b0b0b0;
+        .btn-zero-wide {
+            grid-column: span 2;
         }
     </style>
 </head>
 <body>
-    <div class="calculator-container">
-        <h1>Simple Calculator</h1>
-        <div class="calculator">
-            <input type="text" id="display" readonly value="0">
-            <div class="buttons">
-                <button class="clear" value="clear">C</button>
-                <button class="operator" value="/">/</button>
-                <button class="operator" value="*">x</button>
-                <button class="operator" value="-">-</button>
+    <div class="calculator-app">
+        <input type="text" id="calculator-display" value="0" readonly>
+        <div class="calculator-buttons">
+            <button id="clear-btn" class="btn-clear">C</button>
+            <button class="btn-operator" data-operator="%">&percnt;</button>
+            <button class="btn-operator" data-operator="/">&divide;</button>
+            <button class="btn-operator" data-operator="*">&times;</button>
 
-                <button value="7">7</button>
-                <button value="8">8</button>
-                <button value="9">9</button>
-                <button class="operator" value="+">+</button> <!-- This will span rows 2 & 3 -->
+            <button class="btn-number">7</button>
+            <button class="btn-number">8</button>
+            <button class="btn-number">9</button>
+            <button class="btn-operator" data-operator="-">&minus;</button>
 
-                <button value="4">4</button>
-                <button value="5">5</button>
-                <button value="6">6</button>
+            <button class="btn-number">4</button>
+            <button class="btn-number">5</button>
+            <button class="btn-number">6</button>
+            <button class="btn-operator" data-operator="+">&plus;</button>
 
-                <button value="1">1</button>
-                <button value="2">2</button>
-                <button value="3">3</button>
-                <button class="equals" value="=">=</button> <!-- This will span rows 4 & 5 -->
+            <button class="btn-number">1</button>
+            <button class="btn-number">2</button>
+            <button class="btn-number">3</button>
+            <button id="decimal-btn" class="btn-decimal">.</button>
 
-                <button value="0">0</button> <!-- This will span columns 1 & 2 -->
-                <button class="decimal" value=".">.</button>
-            </div>
+            <button class="btn-number btn-zero-wide">0</button>
+            <button id="equals-btn" class="btn-equals">=</button>
         </div>
     </div>
 
-    <div class="footer">
-        <p>&copy; 2023 Simple Calculator App. All rights reserved.</p>
-        <details>
-            <summary>MIT License</summary>
-            <pre>
-MIT License
-
-Copyright (c) 2023 Simple Calculator App
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-            </pre>
-        </details>
-    </div>
-
     <script>
-        let displayValue = '0';
-        let firstOperand = null;
-        let operator = null;
-        let waitingForSecondOperand = false;
-
-        function updateDisplay() {
-            const display = document.getElementById('display');
-            display.value = displayValue;
-        }
-
-        function inputDigit(digit) {
-            if (waitingForSecondOperand === true) {
-                displayValue = digit;
-                waitingForSecondOperand = false;
-            } else {
-                // Prevent multiple leading zeros, but allow '0.'
-                if (displayValue === '0' && digit !== '.') {
-                    displayValue = digit;
-                } else {
-                    displayValue += digit;
-                }
-            }
-            updateDisplay();
-        }
-
-        function inputDecimal(dot) {
-            // If an operator was just pressed, start a new number with '0.'
-            if (waitingForSecondOperand === true) {
-                displayValue = '0.';
-                waitingForSecondOperand = false;
-                updateDisplay();
-                return;
-            }
-
-            // Only add a decimal if the current display value doesn't already contain one
-            if (!displayValue.includes(dot)) {
-                displayValue += dot;
-            }
-            updateDisplay();
-        }
-
-        function handleOperator(nextOperator) {
-            const inputValue = parseFloat(displayValue);
-
-            // If an operator is already set and we're waiting for a second operand,
-            // just update the operator (e.g., 5 + * becomes 5 * )
-            if (operator && waitingForSecondOperand) {
-                operator = nextOperator;
-                return;
-            }
-
-            // Store the first operand if it hasn't been set yet
-            if (firstOperand === null && !isNaN(inputValue)) {
-                firstOperand = inputValue;
-            } else if (operator) {
-                // If an operator is set and we have a second number, perform calculation
-                const result = calculate(firstOperand, inputValue, operator);
-
-                // Handle error state (e.g., division by zero)
-                if (result === 'Error') {
-                    displayValue = 'Error';
-                    resetCalculator(); // Reset calculator state
-                    updateDisplay();
-                    return;
-                }
-
-                // Limit decimal places for display and prevent floating point issues
-                displayValue = `${parseFloat(result.toFixed(7))}`;
-                firstOperand = result; // The result becomes the new first operand for chaining operations
-            }
-
-            waitingForSecondOperand = true;
-            operator = nextOperator;
-            updateDisplay();
-        }
-
-        function calculate(first, second, op) {
-            if (op === '+') return first + second;
-            if (op === '-') return first - second;
-            if (op === '*') return first * second;
-            if (op === '/') {
-                if (second === 0) return 'Error'; // Division by zero
-                return first / second;
-            }
-            return second; // Should not be reached in normal operation
-        }
-
-        function resetCalculator() {
-            displayValue = '0';
-            firstOperand = null;
-            operator = null;
-            waitingForSecondOperand = false;
-            updateDisplay();
-        }
-
-        // Event listener for button clicks
         document.addEventListener('DOMContentLoaded', () => {
-            const buttons = document.querySelector('.buttons');
-            buttons.addEventListener('click', (event) => {
-                const { target } = event;
+            const display = document.getElementById('calculator-display');
+            const numberButtons = document.querySelectorAll('.btn-number');
+            const operatorButtons = document.querySelectorAll('.btn-operator');
+            const equalsButton = document.getElementById('equals-btn');
+            const clearButton = document.getElementById('clear-btn');
+            const decimalButton = document.getElementById('decimal-btn');
 
-                // Ensure a button was clicked
-                if (!target.matches('button')) {
-                    return;
-                }
+            let currentInput = '0';
+            let previousInput = '';
+            let operator = null;
+            let resetDisplay = false;
 
-                if (target.classList.contains('operator')) {
-                    handleOperator(target.value);
-                    return;
-                }
+            function updateDisplay() {
+                display.value = currentInput;
+            }
 
-                if (target.classList.contains('decimal')) {
-                    inputDecimal(target.value);
-                    return;
-                }
-
-                if (target.classList.contains('clear')) {
-                    resetCalculator();
-                    return;
-                }
-
-                if (target.classList.contains('equals')) {
-                    // Trigger calculation when '=' is pressed
-                    handleOperator(operator); // Use the existing operator to complete calculation
-                    // After calculation, reset operator and waitingForSecondOperand for a fresh start
-                    operator = null;
-                    waitingForSecondOperand = false;
-                    return;
-                }
-
-                inputDigit(target.value);
+            numberButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    if (resetDisplay) {
+                        currentInput = button.textContent;
+                        resetDisplay = false;
+                    } else {
+                        if (currentInput === '0' && button.textContent !== '.') {
+                            currentInput = button.textContent;
+                        } else {
+                            currentInput += button.textContent;
+                        }
+                    }
+                    updateDisplay();
+                });
             });
 
-            updateDisplay(); // Initialize display on page load
+            decimalButton.addEventListener('click', () => {
+                if (resetDisplay) {
+                    currentInput = '0.';
+                    resetDisplay = false;
+                } else if (!currentInput.includes('.')) {
+                    currentInput += '.';
+                }
+                updateDisplay();
+            });
+
+            operatorButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    if (operator && !resetDisplay) {
+                        performCalculation();
+                        previousInput = currentInput;
+                    } else {
+                        previousInput = currentInput;
+                    }
+                    operator = button.dataset.operator;
+                    resetDisplay = true;
+                });
+            });
+
+            equalsButton.addEventListener('click', () => {
+                if (operator === null || resetDisplay) return;
+
+                performCalculation();
+                operator = null;
+                previousInput = '';
+                resetDisplay = true;
+            });
+
+            clearButton.addEventListener('click', () => {
+                currentInput = '0';
+                previousInput = '';
+                operator = null;
+                resetDisplay = false;
+                updateDisplay();
+            });
+
+            function performCalculation() {
+                const prev = parseFloat(previousInput);
+                const current = parseFloat(currentInput);
+
+                if (isNaN(prev) || isNaN(current)) {
+                    currentInput = 'Error';
+                    return;
+                }
+
+                let result;
+                switch (operator) {
+                    case '+':
+                        result = prev + current;
+                        break;
+                    case '-':
+                        result = prev - current;
+                        break;
+                    case '*':
+                        result = prev * current;
+                        break;
+                    case '/':
+                        if (current === 0) {
+                            currentInput = 'Error: Div by 0';
+                            return;
+                        }
+                        result = prev / current;
+                        break;
+                    case '%':
+                        result = prev % current;
+                        break;
+                    default:
+                        return;
+                }
+                currentInput = result.toString();
+                updateDisplay();
+            }
+
+            updateDisplay();
         });
     </script>
 </body>
