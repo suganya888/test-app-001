@@ -1,29 +1,33 @@
-# Simple Calculator Application
+# Simple Calculator App
 
-![Project Status](https://img.shields.io/badge/Status-Complete-brightgreen)
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
+## Project Overview
 
-## 📝 Project Overview
+`test-app-001` is a straightforward web-based calculator application designed to perform basic arithmetic operations. This project serves as a foundational example of building interactive web interfaces using standard front-end technologies.
 
-This repository hosts a simple, interactive calculator web application (`test-app-001`). The primary goal of this project was to develop a basic calculator capable of performing standard arithmetic operations, demonstrating fundamental front-end development skills using HTML, CSS, and JavaScript.
+*   **Repository:** [https://github.com/suganya888/test-app-001](https://github.com/suganya888/test-app-001)
+*   **Live Demo:** [https://suganya888.github.io/test-app-001/](https://suganya888.github.io/test-app-001/)
 
-## ✨ Features
+## Features
 
-The Simple Calculator Application provides the following core functionalities:
+This calculator app provides the following core functionalities:
 
-*   **Basic Arithmetic Operations**: Perform addition (+), subtraction (-), multiplication (*), and division (/) of numbers.
-*   **Clear Functionality**: A "Clear" (C) button to reset the current input and calculation.
-*   **Interactive User Interface**: A responsive and intuitive interface for inputting numbers and operations.
-*   **Real-time Display**: Shows the current input and calculation results on the screen.
+*   **Basic Arithmetic Operations:** Perform addition (`+`), subtraction (`-`), multiplication (`*`), and division (`/`).
+*   **Number Input:** Input single-digit or multi-digit numbers.
+*   **Clear Functionality:** A 'C' button to reset the current input and calculation.
+*   **Result Display:** Shows the input numbers, operators, and the final calculated result.
+*   **User-Friendly Interface:** A simple and intuitive layout for easy interaction.
 
-## 🚀 Live Demo
+## Setup Instructions
 
-Experience the calculator live in your browser:
+There are no complex dependencies or build steps required for this project.
 
-[https://suganya888.github.io/test-app-001/](https://suganya888.github.io/test-app-001/)
+### Option 1: Accessing the Live Demo
 
-## 🛠️ Setup Instructions
+The simplest way to use the calculator is via the live demo:
+1.  Navigate to the [Live Demo URL](https://suganya888.github.io/test-app-001/) in your web browser.
 
-To get a local copy of this project up and running, follow these simple steps:
+### Option 2: Running Locally
+
+To run the application on your local machine:
 
 1.  **Clone the repository:**
