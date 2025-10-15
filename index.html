@@ -118,11 +118,27 @@
         .btn.double {
             grid-column: span 2;
         }
+
+        .btn.memory {
+            background-color: #add8e6; /* Light blue */
+            color: #333;
+        }
+        .btn.memory:hover {
+            background-color: #87ceeb; /* Slightly darker blue on hover */
+        }
     </style>
 </head>
 <body>
     <div class="calculator">
         <input type="text" id="display" value="0" readonly>
+        
+        <!-- Memory Buttons -->
+        <button class="btn memory" id="mc">MC</button>
+        <button class="btn memory" id="mr">MR</button>
+        <button class="btn memory" id="m-plus">M+</button>
+        <button class="btn memory" id="m-minus">M-</button>
+
+        <!-- Existing Buttons, now shifted down -->
         <button class="btn clear" id="clear">C</button>
         <button class="btn operator" id="sqrt">√</button>
         <button class="btn operator" id="percent">%</button>
@@ -154,6 +170,7 @@
         let previousInput = '';
         let operator = null;
         let resetDisplay = false;
+        let memory = 0; // Initialize memory
 
         function updateDisplay() {
             display.value = currentInput;
@@ -180,10 +197,12 @@
         }
 
         function chooseOperator(op) {
-            if (operator !== null && !resetDisplay) {
-                calculate();
+            if (operator !== null && !resetDisplay) { 
+                calculate(); 
             }
-            if (currentInput === '') return;
+            if (currentInput === '' || currentInput === 'Error' || currentInput.startsWith('Error:')) {
+                return;
+            }
             previousInput = currentInput;
             operator = op;
             resetDisplay = true;
@@ -196,8 +215,8 @@
 
             if (isNaN(prev) || isNaN(current)) {
                 currentInput = 'Error';
-                operator = null;
-                previousInput = '';
+                operator = null; 
+                previousInput = ''; 
                 resetDisplay = true;
                 updateDisplay();
                 return;
@@ -216,8 +235,8 @@
                 case '/':
                     if (current === 0) {
                         currentInput = 'Error: Div by 0';
-                        operator = null;
-                        previousInput = '';
+                        operator = null; 
+                        previousInput = ''; 
                         resetDisplay = true;
                         updateDisplay();
                         return;
@@ -225,12 +244,12 @@
                     result = prev / current;
                     break;
                 default:
-                    return;
+                    return; 
             }
             currentInput = String(result);
-            operator = null;
-            previousInput = '';
-            resetDisplay = true;
+            operator = null; 
+            previousInput = ''; 
+            resetDisplay = true; 
             updateDisplay();
         }
 
@@ -243,8 +262,8 @@
             } else {
                 currentInput = String(Math.sqrt(num));
             }
-            previousInput = ''; // Clear previous state as sqrt is a unary operation
-            operator = null;
+            previousInput = ''; 
+            operator = null; 
             resetDisplay = true;
             updateDisplay();
         }
@@ -260,11 +279,9 @@
                 return;
             }
 
-            if (operator === null) {
-                // If no operator, treat as X / 100
+            if (operator === null || previousInput === '') {
                 currentInput = String(num / 100);
             } else {
-                // If an operator is present, calculate X % of previousInput
                 const prev = parseFloat(previousInput);
                 if (isNaN(prev)) {
                     currentInput = 'Error';
@@ -274,10 +291,29 @@
                     updateDisplay();
                     return;
                 }
-                // Calculate the percentage value relative to previousInput
+                
                 const percentageValue = (prev * num) / 100;
-                currentInput = String(percentageValue);
+                
+                switch (operator) {
+                    case '+':
+                        currentInput = String(prev + percentageValue);
+                        break;
+                    case '-':
+                        currentInput = String(prev - percentageValue);
+                        break;
+                    case '*':
+                        currentInput = String(prev * (num / 100)); 
+                        break;
+                    case '/':
+                        currentInput = String(prev / (num / 100)); 
+                        break;
+                    default:
+                        currentInput = String(percentageValue); 
+                        break;
+                }
             }
+            operator = null; 
+            previousInput = '';
             resetDisplay = true;
             updateDisplay();
         }
@@ -290,12 +326,40 @@
             updateDisplay();
         }
 
+        // Memory Functions
+        function clearMemory() {
+            memory = 0;
+        }
+
+        function recallMemory() {
+            currentInput = String(memory);
+            resetDisplay = true; 
+            updateDisplay();
+        }
+
+        function addToMemory() {
+            let num = parseFloat(currentInput);
+            if (!isNaN(num) && !currentInput.startsWith('Error:')) {
+                memory += num;
+            }
+            resetDisplay = true; 
+        }
+
+        function subtractFromMemory() {
+            let num = parseFloat(currentInput);
+            if (!isNaN(num) && !currentInput.startsWith('Error:')) {
+                memory -= num;
+            }
+            resetDisplay = true; 
+        }
+
+
+        // Event Listeners
         document.querySelectorAll('.btn.num').forEach(button => {
             button.addEventListener('click', () => appendNumber(button.textContent));
         });
 
         document.querySelectorAll('.btn.operator').forEach(button => {
-            // Exclude sqrt and percent from standard operator handling
             if (button.id !== 'sqrt' && button.id !== 'percent') {
                 button.addEventListener('click', () => chooseOperator(button.textContent));
             }
@@ -306,6 +370,12 @@
         document.getElementById('decimal').addEventListener('click', appendDecimal);
         document.getElementById('sqrt').addEventListener('click', calculateSquareRoot);
         document.getElementById('percent').addEventListener('click', calculatePercentage);
+
+        // Add event listeners for new memory buttons
+        document.getElementById('mc').addEventListener('click', clearMemory);
+        document.getElementById('mr').addEventListener('click', recallMemory);
+        document.getElementById('m-plus').addEventListener('click', addToMemory);
+        document.getElementById('m-minus').addEventListener('click', subtractFromMemory);
 
         updateDisplay();
     </script>
