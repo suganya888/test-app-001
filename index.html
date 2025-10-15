@@ -1,305 +1,316 @@
+<!--
+MIT License
+
+Copyright (c) 2023 Your Name
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-->
+
+<!--
+README.md
+
+# Simple Calculator Web App
+
+This is a minimal, single-page web application that provides a basic calculator functionality. It's built with pure HTML, CSS, and JavaScript, designed for simplicity and ease of deployment.
+
+## Features
+
+*   **Basic Arithmetic Operations**: Supports addition, subtraction, multiplication, and division.
+*   **Decimal Support**: Allows calculations with decimal numbers.
+*   **Clear Functionality**: Reset the calculator with a single button.
+*   **User-Friendly Interface**: Clean and professional design, easy to use.
+*   **Error Handling**: Displays "Error" for invalid operations like division by zero.
+
+## How to Use
+
+1.  Open the `index.html` file in your web browser.
+2.  Click on the number buttons to input your desired numbers.
+3.  Click on an operator (+, -, \*, /) to perform an operation.
+4.  Enter the second number.
+5.  Click the "=" button to see the result.
+6.  Use the "C" button to clear the current input and reset the calculator.
+
+## Technical Details
+
+*   **Single HTML File**: All HTML, CSS, and JavaScript are embedded within a single `index.html` file.
+*   **Vanilla JavaScript**: No external libraries or frameworks are used, ensuring a lightweight and fast application.
+*   **Responsive Design**: Basic styling ensures usability across different screen sizes (though primarily designed for desktop/tablet).
+
+## Deployment
+
+This application is ready to be deployed to static hosting services like GitHub Pages. Simply upload the `index.html` file to your repository, and enable GitHub Pages for that branch.
+
+## License
+
+This project is licensed under the MIT License. See the included license text for more details.
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Calculator</title>
-    <!--
-    MIT License
-
-    Copyright (c) 2023 Your Name
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-    -->
-    <!--
-    # Simple Calculator App
-
-    A minimalist single-page web application providing basic arithmetic operations.
-
-    ## Features
-    - Addition, Subtraction, Multiplication, Division
-    - Clear functionality
-    - Decimal support
-    - Error handling for division by zero
-    - Responsive and clean user interface
-
-    ## How to Use
-    1. Enter numbers using the number buttons.
-    2. Select an operation (+, -, *, /).
-    3. Enter the next number.
-    4. Press '=' to see the result.
-    5. Use 'C' to clear the display and reset the calculator.
-
-    ## Technologies Used
-    - HTML5
-    - CSS3
-    - JavaScript
-
-    ## License
-    This project is open-source and available under the MIT License.
-    -->
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #f4f4f4;
+            background-color: #f4f7f6;
             color: #333;
         }
 
-        .calculator-app {
-            background-color: #3a4750;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        .calculator {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
             padding: 20px;
             width: 320px;
+            box-sizing: border-box;
+            border: 1px solid #e0e0e0;
         }
 
         #calculator-display {
-            width: calc(100% - 20px);
-            height: 60px;
-            background-color: #222831;
-            border: none;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            font-size: 2.5em;
-            color: #eeeeee;
+            width: 100%;
+            height: 70px;
+            background-color: #222;
+            color: #fff;
+            font-size: 2.8em;
             text-align: right;
-            padding: 0 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 8px;
             box-sizing: border-box;
             overflow: hidden;
             white-space: nowrap;
-            text-overflow: clip;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            pointer-events: none; /* Make display non-interactive */
         }
 
         .calculator-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
 
         .calculator-buttons button {
             width: 100%;
-            height: 60px;
+            height: 70px;
             font-size: 1.8em;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            background-color: #4a5c6a;
-            color: #eeeeee;
-            transition: background-color 0.2s ease;
-            outline: none;
+            transition: background-color 0.2s, transform 0.1s;
+            background-color: #e0e0e0;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .calculator-buttons button:hover {
-            background-color: #5c7081;
+            background-color: #d0d0d0;
+            transform: translateY(-2px);
         }
 
         .calculator-buttons button:active {
-            background-color: #3b4b58;
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-operator {
-            background-color: #f77f00;
+        .calculator-buttons .operator {
+            background-color: #ff9500;
+            color: #fff;
         }
 
-        .btn-operator:hover {
-            background-color: #ff9d33;
+        .calculator-buttons .operator:hover {
+            background-color: #e08500;
         }
 
-        .btn-operator:active {
-            background-color: #d16b00;
+        .calculator-buttons .equals {
+            background-color: #007bff;
+            color: #fff;
+            grid-column: span 2; /* Make equals button span two columns */
         }
 
-        #equals-btn {
-            background-color: #00bcd4;
-            grid-column: span 2;
+        .calculator-buttons .equals:hover {
+            background-color: #0069d9;
         }
 
-        #equals-btn:hover {
-            background-color: #33d0e4;
+        .calculator-buttons .clear {
+            background-color: #dc3545;
+            color: #fff;
         }
 
-        #equals-btn:active {
-            background-color: #00a4b8;
+        .calculator-buttons .clear:hover {
+            background-color: #c82333;
         }
 
-        #clear-btn {
-            background-color: #e63946;
-        }
-
-        #clear-btn:hover {
-            background-color: #f0616b;
-        }
-
-        #clear-btn:active {
-            background-color: #cc2a36;
-        }
-
-        .btn-zero-wide {
+        .calculator-buttons .zero {
             grid-column: span 2;
         }
     </style>
 </head>
 <body>
-    <div class="calculator-app">
-        <input type="text" id="calculator-display" value="0" readonly>
+    <div class="calculator">
+        <div id="calculator-display">0</div>
         <div class="calculator-buttons">
-            <button id="clear-btn" class="btn-clear">C</button>
-            <button class="btn-operator" data-operator="%">&percnt;</button>
-            <button class="btn-operator" data-operator="/">&divide;</button>
-            <button class="btn-operator" data-operator="*">&times;</button>
+            <button id="button-clear" class="clear">C</button>
+            <button id="button-backspace" disabled style="visibility: hidden;">&#x232B;</button> <!-- Hidden, not implemented in minimal version -->
+            <button id="button-percent" disabled style="visibility: hidden;">%</button> <!-- Hidden, not implemented in minimal version -->
+            <button id="button-divide" class="operator">/</button>
 
-            <button class="btn-number">7</button>
-            <button class="btn-number">8</button>
-            <button class="btn-number">9</button>
-            <button class="btn-operator" data-operator="-">&minus;</button>
+            <button id="button-7">7</button>
+            <button id="button-8">8</button>
+            <button id="button-9">9</button>
+            <button id="button-multiply" class="operator">*</button>
 
-            <button class="btn-number">4</button>
-            <button class="btn-number">5</button>
-            <button class="btn-number">6</button>
-            <button class="btn-operator" data-operator="+">&plus;</button>
+            <button id="button-4">4</button>
+            <button id="button-5">5</button>
+            <button id="button-6">6</button>
+            <button id="button-subtract" class="operator">-</button>
 
-            <button class="btn-number">1</button>
-            <button class="btn-number">2</button>
-            <button class="btn-number">3</button>
-            <button id="decimal-btn" class="btn-decimal">.</button>
+            <button id="button-1">1</button>
+            <button id="button-2">2</button>
+            <button id="button-3">3</button>
+            <button id="button-add" class="operator">+</button>
 
-            <button class="btn-number btn-zero-wide">0</button>
-            <button id="equals-btn" class="btn-equals">=</button>
+            <button id="button-0" class="zero">0</button>
+            <button id="button-decimal">.</button>
+            <button id="button-equals" class="equals">=</button>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const display = document.getElementById('calculator-display');
-            const numberButtons = document.querySelectorAll('.btn-number');
-            const operatorButtons = document.querySelectorAll('.btn-operator');
-            const equalsButton = document.getElementById('equals-btn');
-            const clearButton = document.getElementById('clear-btn');
-            const decimalButton = document.getElementById('decimal-btn');
+            const buttons = document.querySelector('.calculator-buttons');
 
-            let currentInput = '0';
-            let previousInput = '';
+            let displayValue = '0';
+            let firstOperand = null;
             let operator = null;
-            let resetDisplay = false;
+            let waitingForSecondOperand = false;
 
             function updateDisplay() {
-                display.value = currentInput;
+                display.textContent = displayValue;
             }
 
-            numberButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    if (resetDisplay) {
-                        currentInput = button.textContent;
-                        resetDisplay = false;
-                    } else {
-                        if (currentInput === '0' && button.textContent !== '.') {
-                            currentInput = button.textContent;
-                        } else {
-                            currentInput += button.textContent;
-                        }
-                    }
-                    updateDisplay();
-                });
-            });
-
-            decimalButton.addEventListener('click', () => {
-                if (resetDisplay) {
-                    currentInput = '0.';
-                    resetDisplay = false;
-                } else if (!currentInput.includes('.')) {
-                    currentInput += '.';
+            function inputDigit(digit) {
+                if (waitingForSecondOperand) {
+                    displayValue = digit;
+                    waitingForSecondOperand = false;
+                } else {
+                    displayValue = displayValue === '0' ? digit : displayValue + digit;
                 }
                 updateDisplay();
-            });
+            }
 
-            operatorButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    if (operator && !resetDisplay) {
-                        performCalculation();
-                        previousInput = currentInput;
-                    } else {
-                        previousInput = currentInput;
-                    }
-                    operator = button.dataset.operator;
-                    resetDisplay = true;
-                });
-            });
-
-            equalsButton.addEventListener('click', () => {
-                if (operator === null || resetDisplay) return;
-
-                performCalculation();
-                operator = null;
-                previousInput = '';
-                resetDisplay = true;
-            });
-
-            clearButton.addEventListener('click', () => {
-                currentInput = '0';
-                previousInput = '';
-                operator = null;
-                resetDisplay = false;
+            function inputDecimal(dot) {
+                if (waitingForSecondOperand) {
+                    displayValue = '0.';
+                    waitingForSecondOperand = false;
+                    updateDisplay();
+                    return;
+                }
+                if (!displayValue.includes(dot)) {
+                    displayValue += dot;
+                }
                 updateDisplay();
-            });
+            }
 
-            function performCalculation() {
-                const prev = parseFloat(previousInput);
-                const current = parseFloat(currentInput);
+            function handleOperator(nextOperator) {
+                const inputValue = parseFloat(displayValue);
 
-                if (isNaN(prev) || isNaN(current)) {
-                    currentInput = 'Error';
+                if (operator && waitingForSecondOperand) {
+                    operator = nextOperator;
                     return;
                 }
 
-                let result;
-                switch (operator) {
-                    case '+':
-                        result = prev + current;
-                        break;
-                    case '-':
-                        result = prev - current;
-                        break;
-                    case '*':
-                        result = prev * current;
-                        break;
-                    case '/':
-                        if (current === 0) {
-                            currentInput = 'Error: Div by 0';
-                            return;
-                        }
-                        result = prev / current;
-                        break;
-                    case '%':
-                        result = prev % current;
-                        break;
-                    default:
+                if (firstOperand === null) {
+                    firstOperand = inputValue;
+                } else if (operator) {
+                    const result = performCalculation[operator](firstOperand, inputValue);
+
+                    if (isNaN(result) || !isFinite(result)) {
+                        displayValue = 'Error';
+                        firstOperand = null;
+                        operator = null;
+                        waitingForSecondOperand = false;
+                        updateDisplay();
                         return;
+                    }
+
+                    displayValue = String(result);
+                    firstOperand = result;
                 }
-                currentInput = result.toString();
+
+                waitingForSecondOperand = true;
+                operator = nextOperator;
                 updateDisplay();
             }
 
+            const performCalculation = {
+                '/': (first, second) => second === 0 ? NaN : first / second,
+                '*': (first, second) => first * second,
+                '+': (first, second) => first + second,
+                '-': (first, second) => first - second,
+                '=': (first, second) => second, // '=' just uses the existing operator, or acts as identity if no operator
+            };
+
+            function resetCalculator() {
+                displayValue = '0';
+                firstOperand = null;
+                operator = null;
+                waitingForSecondOperand = false;
+                updateDisplay();
+            }
+
+            buttons.addEventListener('click', (event) => {
+                const { target } = event;
+                if (!target.matches('button')) {
+                    return;
+                }
+
+                if (target.id === 'button-clear') {
+                    resetCalculator();
+                    return;
+                }
+
+                if (target.id === 'button-decimal') {
+                    inputDecimal(target.textContent);
+                    return;
+                }
+
+                if (target.classList.contains('operator') || target.id === 'button-equals') {
+                    handleOperator(target.textContent);
+                    return;
+                }
+
+                // If it's a number button
+                inputDigit(target.textContent);
+            });
+
+            // Initialize display
             updateDisplay();
         });
     </script>
