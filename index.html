@@ -128,6 +128,12 @@ SOFTWARE.
     <div class="calculator">
         <input type="text" id="display" class="form-control" value="0" readonly>
         <div class="buttons-grid">
+            <!-- Memory Row -->
+            <button class="btn btn-secondary" id="memory-clear" data-type="memory-function" data-value="mc">MC</button>
+            <button class="btn btn-secondary" id="memory-recall" data-type="memory-function" data-value="mr">MR</button>
+            <button class="btn btn-secondary" id="memory-subtract" data-type="memory-function" data-value="m-">M-</button>
+            <button class="btn btn-secondary" id="memory-add" data-type="memory-function" data-value="m+">M+</button>
+
             <!-- Row 1 -->
             <button class="btn btn-danger" id="clear">C</button>
             <button class="btn btn-secondary" data-type="unary-operator" data-value="%">%</button>
@@ -166,7 +172,9 @@ SOFTWARE.
             let currentInput = '0';
             let firstOperand = null;
             let operator = null;
-            let waitingForSecondOperand = false; // True if an operator was just pressed, next number replaces currentInput
+            let waitingForSecondOperand = false; // True if an operator was just pressed or equals, next number replaces currentInput
+            let hasSecondOperandBeenEntered = false; // True if digits/MR/unary op provided a second operand after an operator
+            let memory = 0; // Calculator memory
 
             function updateDisplay() {
                 display.value = currentInput;
@@ -177,6 +185,7 @@ SOFTWARE.
                 firstOperand = null;
                 operator = null;
                 waitingForSecondOperand = false;
+                hasSecondOperandBeenEntered = false; // Reset this flag too
                 updateDisplay();
             }
 
@@ -184,6 +193,7 @@ SOFTWARE.
                 if (waitingForSecondOperand === true) {
                     currentInput = digit;
                     waitingForSecondOperand = false;
+                    hasSecondOperandBeenEntered = true; // A new second operand is being typed
                 } else {
                     currentInput = currentInput === '0' ? digit : currentInput + digit;
                 }
@@ -194,6 +204,7 @@ SOFTWARE.
                 if (waitingForSecondOperand === true) {
                     currentInput = '0.';
                     waitingForSecondOperand = false;
+                    hasSecondOperandBeenEntered = true; // Decimal starts a new second operand
                     updateDisplay();
                     return;
                 }
@@ -217,12 +228,16 @@ SOFTWARE.
                     firstOperand = inputValue;
                 } else if (operator) {
                     // Chained operation (e.g., 5 + 3 -)
-                    const result = performCalculation[operator](firstOperand, inputValue);
-                    currentInput = String(result);
-                    firstOperand = result;
+                    // If an operator was pending and a second operand was entered, calculate
+                    if (hasSecondOperandBeenEntered || !waitingForSecondOperand) { // Ensure calculation happens if second operand was typed or provided by MR/unary
+                        const result = performCalculation[operator](firstOperand, inputValue);
+                        currentInput = String(result);
+                        firstOperand = result;
+                    }
                 }
 
                 waitingForSecondOperand = true;
+                hasSecondOperandBeenEntered = false; // Operator was just pressed, waiting for new second operand
                 operator = nextOperator;
                 updateDisplay();
             }
@@ -247,22 +262,52 @@ SOFTWARE.
                     }
                     result = Math.sqrt(inputValue);
                 } else if (unaryOp === '%') {
-                    // If an operator is active and firstOperand is set, calculate percentage relative to firstOperand
-                    // e.g., 100 + 10%  => 10% of 100 is 10. The operation becomes 100 + 10.
-                    // e.g., 100 * 10%  => 10% of 100 is 10. The operation becomes 100 * 10.
                     if (operator && firstOperand !== null) {
                         result = firstOperand * (inputValue / 100);
                     } else {
-                        // No operator active, just convert current input to percentage (divide by 100)
                         result = inputValue / 100;
                     }
                 }
                 
                 currentInput = String(result);
                 updateDisplay();
-                // After any unary operation, the current display holds a value that can be extended by new digits.
-                // It is no longer "waiting for a second operand" to be typed in place of the first.
-                waitingForSecondOperand = false;
+                waitingForSecondOperand = false; // After unary op, the result can be extended by new digits.
+                // If an operator was pending, this unary op result IS the second operand.
+                if (operator && firstOperand !== null) {
+                    hasSecondOperandBeenEntered = true;
+                }
+            }
+
+            function memoryClear() {
+                memory = 0;
+            }
+
+            function memoryRecall() {
+                currentInput = String(memory);
+                waitingForSecondOperand = true; // Next digit replaces memory value
+                // If an operator is pending, MR *provides* the second operand.
+                if (operator && firstOperand !== null) {
+                    hasSecondOperandBeenEntered = true;
+                } else {
+                    // If no operator pending, MR is like entering a new number.
+                    // The next digit should still replace it.
+                    hasSecondOperandBeenEntered = false; // No pending op means no "second operand" context.
+                }
+                updateDisplay();
+            }
+
+            function memoryAdd() {
+                const inputValue = parseFloat(currentInput);
+                if (!isNaN(inputValue)) {
+                    memory += inputValue;
+                }
+            }
+
+            function memorySubtract() {
+                const inputValue = parseFloat(currentInput);
+                if (!isNaN(inputValue)) {
+                    memory -= inputValue;
+                }
             }
 
             const performCalculation = {
@@ -271,7 +316,7 @@ SOFTWARE.
                         display.value = 'Error';
                         alert("Error: Division by zero!");
                         clearCalculator();
-                        return '0'; // Return '0' or trigger clear directly
+                        return '0';
                     }
                     return first / second;
                 },
@@ -294,21 +339,20 @@ SOFTWARE.
 
                 if (target.id === 'equals') {
                     if (firstOperand === null || operator === null) {
-                        // Nothing to calculate if no first operand or operator is set.
-                        // E.g., just pressing '=' or '5='
                         return;
                     }
 
                     let inputValue = parseFloat(currentInput);
                     let result;
 
-                    if (waitingForSecondOperand) {
+                    if (waitingForSecondOperand && !hasSecondOperandBeenEntered) {
                         // This scenario occurs when an operator was just pressed (e.g., '5 +'),
-                        // and no new digits were entered for the second operand.
-                        // In this case, the second operand for calculation is implicitly the first operand. (e.g., 5 + 5)
+                        // and NO new digits, MR, or unary ops were entered.
+                        // So, the user is likely chaining like '5 + =', meaning 5 + 5.
                         result = performCalculation[operator](firstOperand, firstOperand);
                     } else {
                         // New second operand was entered (e.g., '5 + 3')
+                        // OR MR was pressed (e.g., '5 + MR')
                         // OR a unary op was applied to the second operand (e.g., '5 + 9 sqrt')
                         result = performCalculation[operator](firstOperand, inputValue);
                     }
@@ -317,6 +361,7 @@ SOFTWARE.
                     firstOperand = null; // Reset for new calculation
                     operator = null; // Reset operator
                     waitingForSecondOperand = true; // Set to true so next number typed replaces this result
+                    hasSecondOperandBeenEntered = false; // Reset for next calculation
                     updateDisplay();
                     return;
                 }
@@ -338,6 +383,20 @@ SOFTWARE.
 
                 if (target.dataset.type === 'unary-operator') {
                     handleUnaryOperator(target.dataset.value);
+                    return;
+                }
+
+                if (target.dataset.type === 'memory-function') {
+                    const memFunc = target.dataset.value;
+                    if (memFunc === 'mc') {
+                        memoryClear();
+                    } else if (memFunc === 'mr') {
+                        memoryRecall();
+                    } else if (memFunc === 'm+') {
+                        memoryAdd();
+                    } else if (memFunc === 'm-') {
+                        memorySubtract();
+                    }
                     return;
                 }
             });
