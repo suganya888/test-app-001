@@ -128,27 +128,34 @@ SOFTWARE.
     <div class="calculator">
         <input type="text" id="display" class="form-control" value="0" readonly>
         <div class="buttons-grid">
+            <!-- Row 1 -->
             <button class="btn btn-danger" id="clear">C</button>
+            <button class="btn btn-secondary" data-type="unary-operator" data-value="%">%</button>
+            <button class="btn btn-secondary" data-type="unary-operator" data-value="sqrt">√</button>
             <button class="btn btn-secondary" data-type="operator" data-value="/">/</button>
-            <button class="btn btn-secondary" data-type="operator" data-value="*">×</button>
-            <button class="btn btn-secondary" data-type="operator" data-value="-">-</button>
 
+            <!-- Row 2 -->
             <button class="btn btn-primary" data-type="number" data-value="7">7</button>
             <button class="btn btn-primary" data-type="number" data-value="8">8</button>
             <button class="btn btn-primary" data-type="number" data-value="9">9</button>
-            <button class="btn btn-secondary" data-type="operator" data-value="+">+</button>
+            <button class="btn btn-secondary" data-type="operator" data-value="*">×</button>
 
+            <!-- Row 3 -->
             <button class="btn btn-primary" data-type="number" data-value="4">4</button>
             <button class="btn btn-primary" data-type="number" data-value="5">5</button>
             <button class="btn btn-primary" data-type="number" data-value="6">6</button>
+            <button class="btn btn-secondary" data-type="operator" data-value="-">-</button>
 
+            <!-- Row 4 -->
             <button class="btn btn-primary" data-type="number" data-value="1">1</button>
             <button class="btn btn-primary" data-type="number" data-value="2">2</button>
             <button class="btn btn-primary" data-type="number" data-value="3">3</button>
-            <button class="btn btn-info" id="equals">=</button>
+            <button class="btn btn-secondary" data-type="operator" data-value="+">+</button>
 
+            <!-- Row 5 -->
             <button class="btn btn-primary" data-type="number" data-value="0">0</button>
             <button class="btn btn-warning" id="decimal" data-type="decimal" data-value=".">.</button>
+            <button class="btn btn-info" id="equals">=</button>
         </div>
     </div>
 
@@ -159,7 +166,7 @@ SOFTWARE.
             let currentInput = '0';
             let firstOperand = null;
             let operator = null;
-            let waitingForSecondOperand = false;
+            let waitingForSecondOperand = false; // True if an operator was just pressed, next number replaces currentInput
 
             function updateDisplay() {
                 display.value = currentInput;
@@ -200,13 +207,16 @@ SOFTWARE.
                 const inputValue = parseFloat(currentInput);
 
                 if (operator && waitingForSecondOperand) {
+                    // Allows changing operator (e.g., 5 + - becomes 5 -)
                     operator = nextOperator;
+                    updateDisplay();
                     return;
                 }
 
                 if (firstOperand === null) {
                     firstOperand = inputValue;
                 } else if (operator) {
+                    // Chained operation (e.g., 5 + 3 -)
                     const result = performCalculation[operator](firstOperand, inputValue);
                     currentInput = String(result);
                     firstOperand = result;
@@ -217,19 +227,57 @@ SOFTWARE.
                 updateDisplay();
             }
 
+            function handleUnaryOperator(unaryOp) {
+                let inputValue = parseFloat(currentInput);
+
+                if (isNaN(inputValue)) {
+                    display.value = 'Error';
+                    alert("Invalid input for operation.");
+                    clearCalculator();
+                    return;
+                }
+
+                let result;
+                if (unaryOp === 'sqrt') {
+                    if (inputValue < 0) {
+                        display.value = 'Error';
+                        alert("Error: Cannot calculate square root of a negative number!");
+                        clearCalculator();
+                        return;
+                    }
+                    result = Math.sqrt(inputValue);
+                } else if (unaryOp === '%') {
+                    // If an operator is active and firstOperand is set, calculate percentage relative to firstOperand
+                    // e.g., 100 + 10%  => 10% of 100 is 10. The operation becomes 100 + 10.
+                    // e.g., 100 * 10%  => 10% of 100 is 10. The operation becomes 100 * 10.
+                    if (operator && firstOperand !== null) {
+                        result = firstOperand * (inputValue / 100);
+                    } else {
+                        // No operator active, just convert current input to percentage (divide by 100)
+                        result = inputValue / 100;
+                    }
+                }
+                
+                currentInput = String(result);
+                updateDisplay();
+                // After any unary operation, the current display holds a value that can be extended by new digits.
+                // It is no longer "waiting for a second operand" to be typed in place of the first.
+                waitingForSecondOperand = false;
+            }
+
             const performCalculation = {
                 '/': (first, second) => {
                     if (second === 0) {
+                        display.value = 'Error';
                         alert("Error: Division by zero!");
                         clearCalculator();
-                        return '0';
+                        return '0'; // Return '0' or trigger clear directly
                     }
                     return first / second;
                 },
                 '*': (first, second) => first * second,
                 '+': (first, second) => first + second,
-                '-': (first, second) => first - second,
-                '=': (first, second) => second // Equals should effectively just return the second operand if no operator was active or perform the last operation. This logic is handled by the operator block.
+                '-': (first, second) => first - second
             };
 
             buttonsGrid.addEventListener('click', (event) => {
@@ -245,15 +293,30 @@ SOFTWARE.
                 }
 
                 if (target.id === 'equals') {
-                    if (firstOperand === null || operator === null || waitingForSecondOperand) {
-                        return; // Nothing to calculate yet
+                    if (firstOperand === null || operator === null) {
+                        // Nothing to calculate if no first operand or operator is set.
+                        // E.g., just pressing '=' or '5='
+                        return;
                     }
-                    const inputValue = parseFloat(currentInput);
-                    const result = performCalculation[operator](firstOperand, inputValue);
+
+                    let inputValue = parseFloat(currentInput);
+                    let result;
+
+                    if (waitingForSecondOperand) {
+                        // This scenario occurs when an operator was just pressed (e.g., '5 +'),
+                        // and no new digits were entered for the second operand.
+                        // In this case, the second operand for calculation is implicitly the first operand. (e.g., 5 + 5)
+                        result = performCalculation[operator](firstOperand, firstOperand);
+                    } else {
+                        // New second operand was entered (e.g., '5 + 3')
+                        // OR a unary op was applied to the second operand (e.g., '5 + 9 sqrt')
+                        result = performCalculation[operator](firstOperand, inputValue);
+                    }
+
                     currentInput = String(result);
-                    firstOperand = null;
-                    operator = null;
-                    waitingForSecondOperand = true; // Ready for new calculation or chaining
+                    firstOperand = null; // Reset for new calculation
+                    operator = null; // Reset operator
+                    waitingForSecondOperand = true; // Set to true so next number typed replaces this result
                     updateDisplay();
                     return;
                 }
@@ -270,6 +333,11 @@ SOFTWARE.
 
                 if (target.dataset.type === 'operator') {
                     handleOperator(target.dataset.value);
+                    return;
+                }
+
+                if (target.dataset.type === 'unary-operator') {
+                    handleUnaryOperator(target.dataset.value);
                     return;
                 }
             });
