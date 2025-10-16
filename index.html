@@ -1,383 +1,282 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script type="text/plain" id="mit-license">
+MIT License
+
+Copyright (c) 2023 Your Name or Organization
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A clean, simple, and functional web-based calculator application for basic arithmetic operations. Designed for ease of use and quick calculations.">
     <title>Simple Calculator</title>
-    <!--
-    The MIT License (MIT)
-
-    Copyright (c) 2023 Your Name or Organization
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-    -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             background-color: #f0f2f5;
-            margin: 0;
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         .calculator {
-            background-color: #fff;
-            border-radius: 12px;
+            background-color: #ffffff;
+            border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 25px;
             width: 320px;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
+            max-width: 90%;
+            border: 1px solid #e0e0e0;
         }
-
         #display {
-            grid-column: span 4;
-            background-color: #e0e0e0;
+            width: 100%;
+            height: 70px;
+            background-color: #e9ecef;
             border: none;
-            border-radius: 8px;
-            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 10px 20px;
             font-size: 2.5em;
             text-align: right;
-            color: #333;
-            margin-bottom: 10px;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            color: #343a40;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
         }
-
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
         .btn {
-            background-color: #f8f8f8;
-            border: none;
-            border-radius: 8px;
-            padding: 20px 0;
+            height: 60px;
             font-size: 1.5em;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
+            border-radius: 10px;
+            transition: all 0.2s ease-in-out;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-            color: #555;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-
         .btn:hover {
-            background-color: #e0e0e0;
             transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
         }
-
-        .btn:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-        }
-
-        .btn.operator {
-            background-color: #f0a500;
-            color: #fff;
-        }
-
-        .btn.operator:hover {
-            background-color: #d89600;
-        }
-
-        .btn.equals {
+        .btn-primary {
             background-color: #007bff;
-            color: #fff;
+            color: white;
         }
-
-        .btn.equals:hover {
-            background-color: #0069d9;
+        .btn-primary:hover {
+            background-color: #0056b3;
         }
-
-        .btn.clear {
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .btn-info:hover {
+            background-color: #117a8b;
+        }
+        .btn-danger {
             background-color: #dc3545;
-            color: #fff;
+            color: white;
         }
-
-        .btn.clear:hover {
+        .btn-danger:hover {
             background-color: #c82333;
         }
-
-        .btn.double {
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        /* Make the '0' button span two columns */
+        .btn[data-value="0"] {
             grid-column: span 2;
-        }
-
-        .btn.memory {
-            background-color: #add8e6; /* Light blue */
-            color: #333;
-        }
-        .btn.memory:hover {
-            background-color: #87ceeb; /* Slightly darker blue on hover */
         }
     </style>
 </head>
 <body>
     <div class="calculator">
-        <input type="text" id="display" value="0" readonly>
-        
-        <!-- Memory Buttons -->
-        <button class="btn memory" id="mc">MC</button>
-        <button class="btn memory" id="mr">MR</button>
-        <button class="btn memory" id="m-plus">M+</button>
-        <button class="btn memory" id="m-minus">M-</button>
+        <input type="text" id="display" class="form-control" value="0" readonly>
+        <div class="buttons-grid">
+            <button class="btn btn-danger" id="clear">C</button>
+            <button class="btn btn-secondary" data-type="operator" data-value="/">/</button>
+            <button class="btn btn-secondary" data-type="operator" data-value="*">×</button>
+            <button class="btn btn-secondary" data-type="operator" data-value="-">-</button>
 
-        <!-- Existing Buttons, now shifted down -->
-        <button class="btn clear" id="clear">C</button>
-        <button class="btn operator" id="sqrt">√</button>
-        <button class="btn operator" id="percent">%</button>
-        <button class="btn operator" id="divide">/</button>
+            <button class="btn btn-primary" data-type="number" data-value="7">7</button>
+            <button class="btn btn-primary" data-type="number" data-value="8">8</button>
+            <button class="btn btn-primary" data-type="number" data-value="9">9</button>
+            <button class="btn btn-secondary" data-type="operator" data-value="+">+</button>
 
-        <button class="btn num" id="seven">7</button>
-        <button class="btn num" id="eight">8</button>
-        <button class="btn num" id="nine">9</button>
-        <button class="btn operator" id="multiply">*</button>
+            <button class="btn btn-primary" data-type="number" data-value="4">4</button>
+            <button class="btn btn-primary" data-type="number" data-value="5">5</button>
+            <button class="btn btn-primary" data-type="number" data-value="6">6</button>
 
-        <button class="btn num" id="four">4</button>
-        <button class="btn num" id="five">5</button>
-        <button class="btn num" id="six">6</button>
-        <button class="btn operator" id="subtract">-</button>
+            <button class="btn btn-primary" data-type="number" data-value="1">1</button>
+            <button class="btn btn-primary" data-type="number" data-value="2">2</button>
+            <button class="btn btn-primary" data-type="number" data-value="3">3</button>
+            <button class="btn btn-info" id="equals">=</button>
 
-        <button class="btn num" id="one">1</button>
-        <button class="btn num" id="two">2</button>
-        <button class="btn num" id="three">3</button>
-        <button class="btn operator" id="add">+</button>
-
-        <button class="btn num double" id="zero">0</button>
-        <button class="btn" id="decimal">.</button>
-        <button class="btn equals" id="equals">=</button>
+            <button class="btn btn-primary" data-type="number" data-value="0">0</button>
+            <button class="btn btn-warning" id="decimal" data-type="decimal" data-value=".">.</button>
+        </div>
     </div>
 
     <script>
-        const display = document.getElementById('display');
-        let currentInput = '0';
-        let previousInput = '';
-        let operator = null;
-        let resetDisplay = false;
-        let memory = 0; // Initialize memory
+        document.addEventListener('DOMContentLoaded', () => {
+            const display = document.getElementById('display');
+            const buttonsGrid = document.querySelector('.buttons-grid');
+            let currentInput = '0';
+            let firstOperand = null;
+            let operator = null;
+            let waitingForSecondOperand = false;
 
-        function updateDisplay() {
-            display.value = currentInput;
-        }
-
-        function appendNumber(number) {
-            if (currentInput === '0' || resetDisplay) {
-                currentInput = number;
-                resetDisplay = false;
-            } else {
-                currentInput += number;
-            }
-            updateDisplay();
-        }
-
-        function appendDecimal() {
-            if (resetDisplay) {
-                currentInput = '0.';
-                resetDisplay = false;
-            } else if (!currentInput.includes('.')) {
-                currentInput += '.';
-            }
-            updateDisplay();
-        }
-
-        function chooseOperator(op) {
-            if (operator !== null && !resetDisplay) { 
-                calculate(); 
-            }
-            if (currentInput === '' || currentInput === 'Error' || currentInput.startsWith('Error:')) {
-                return;
-            }
-            previousInput = currentInput;
-            operator = op;
-            resetDisplay = true;
-        }
-
-        function calculate() {
-            let result;
-            const prev = parseFloat(previousInput);
-            const current = parseFloat(currentInput);
-
-            if (isNaN(prev) || isNaN(current)) {
-                currentInput = 'Error';
-                operator = null; 
-                previousInput = ''; 
-                resetDisplay = true;
-                updateDisplay();
-                return;
+            function updateDisplay() {
+                display.value = currentInput;
             }
 
-            switch (operator) {
-                case '+':
-                    result = prev + current;
-                    break;
-                case '-':
-                    result = prev - current;
-                    break;
-                case '*':
-                    result = prev * current;
-                    break;
-                case '/':
-                    if (current === 0) {
-                        currentInput = 'Error: Div by 0';
-                        operator = null; 
-                        previousInput = ''; 
-                        resetDisplay = true;
-                        updateDisplay();
-                        return;
-                    }
-                    result = prev / current;
-                    break;
-                default:
-                    return; 
-            }
-            currentInput = String(result);
-            operator = null; 
-            previousInput = ''; 
-            resetDisplay = true; 
-            updateDisplay();
-        }
-
-        function calculateSquareRoot() {
-            let num = parseFloat(currentInput);
-            if (isNaN(num)) {
-                currentInput = 'Error';
-            } else if (num < 0) {
-                currentInput = 'Error: Neg Sqrt';
-            } else {
-                currentInput = String(Math.sqrt(num));
-            }
-            previousInput = ''; 
-            operator = null; 
-            resetDisplay = true;
-            updateDisplay();
-        }
-
-        function calculatePercentage() {
-            let num = parseFloat(currentInput);
-            if (isNaN(num)) {
-                currentInput = 'Error';
-                previousInput = '';
+            function clearCalculator() {
+                currentInput = '0';
+                firstOperand = null;
                 operator = null;
-                resetDisplay = true;
+                waitingForSecondOperand = false;
                 updateDisplay();
-                return;
             }
 
-            if (operator === null || previousInput === '') {
-                currentInput = String(num / 100);
-            } else {
-                const prev = parseFloat(previousInput);
-                if (isNaN(prev)) {
-                    currentInput = 'Error';
-                    previousInput = '';
-                    operator = null;
-                    resetDisplay = true;
+            function inputDigit(digit) {
+                if (waitingForSecondOperand === true) {
+                    currentInput = digit;
+                    waitingForSecondOperand = false;
+                } else {
+                    currentInput = currentInput === '0' ? digit : currentInput + digit;
+                }
+                updateDisplay();
+            }
+
+            function inputDecimal(dot) {
+                if (waitingForSecondOperand === true) {
+                    currentInput = '0.';
+                    waitingForSecondOperand = false;
                     updateDisplay();
                     return;
                 }
-                
-                const percentageValue = (prev * num) / 100;
-                
-                switch (operator) {
-                    case '+':
-                        currentInput = String(prev + percentageValue);
-                        break;
-                    case '-':
-                        currentInput = String(prev - percentageValue);
-                        break;
-                    case '*':
-                        currentInput = String(prev * (num / 100)); 
-                        break;
-                    case '/':
-                        currentInput = String(prev / (num / 100)); 
-                        break;
-                    default:
-                        currentInput = String(percentageValue); 
-                        break;
+                if (!currentInput.includes(dot)) {
+                    currentInput += dot;
                 }
+                updateDisplay();
             }
-            operator = null; 
-            previousInput = '';
-            resetDisplay = true;
-            updateDisplay();
-        }
 
-        function clearCalculator() {
-            currentInput = '0';
-            previousInput = '';
-            operator = null;
-            resetDisplay = false;
-            updateDisplay();
-        }
+            function handleOperator(nextOperator) {
+                const inputValue = parseFloat(currentInput);
 
-        // Memory Functions
-        function clearMemory() {
-            memory = 0;
-        }
+                if (operator && waitingForSecondOperand) {
+                    operator = nextOperator;
+                    return;
+                }
 
-        function recallMemory() {
-            currentInput = String(memory);
-            resetDisplay = true; 
-            updateDisplay();
-        }
+                if (firstOperand === null) {
+                    firstOperand = inputValue;
+                } else if (operator) {
+                    const result = performCalculation[operator](firstOperand, inputValue);
+                    currentInput = String(result);
+                    firstOperand = result;
+                }
 
-        function addToMemory() {
-            let num = parseFloat(currentInput);
-            if (!isNaN(num) && !currentInput.startsWith('Error:')) {
-                memory += num;
+                waitingForSecondOperand = true;
+                operator = nextOperator;
+                updateDisplay();
             }
-            resetDisplay = true; 
-        }
 
-        function subtractFromMemory() {
-            let num = parseFloat(currentInput);
-            if (!isNaN(num) && !currentInput.startsWith('Error:')) {
-                memory -= num;
-            }
-            resetDisplay = true; 
-        }
+            const performCalculation = {
+                '/': (first, second) => {
+                    if (second === 0) {
+                        alert("Error: Division by zero!");
+                        clearCalculator();
+                        return '0';
+                    }
+                    return first / second;
+                },
+                '*': (first, second) => first * second,
+                '+': (first, second) => first + second,
+                '-': (first, second) => first - second,
+                '=': (first, second) => second // Equals should effectively just return the second operand if no operator was active or perform the last operation. This logic is handled by the operator block.
+            };
 
+            buttonsGrid.addEventListener('click', (event) => {
+                const { target } = event;
 
-        // Event Listeners
-        document.querySelectorAll('.btn.num').forEach(button => {
-            button.addEventListener('click', () => appendNumber(button.textContent));
+                if (!target.matches('button')) {
+                    return;
+                }
+
+                if (target.id === 'clear') {
+                    clearCalculator();
+                    return;
+                }
+
+                if (target.id === 'equals') {
+                    if (firstOperand === null || operator === null || waitingForSecondOperand) {
+                        return; // Nothing to calculate yet
+                    }
+                    const inputValue = parseFloat(currentInput);
+                    const result = performCalculation[operator](firstOperand, inputValue);
+                    currentInput = String(result);
+                    firstOperand = null;
+                    operator = null;
+                    waitingForSecondOperand = true; // Ready for new calculation or chaining
+                    updateDisplay();
+                    return;
+                }
+
+                if (target.dataset.type === 'number') {
+                    inputDigit(target.dataset.value);
+                    return;
+                }
+
+                if (target.dataset.type === 'decimal') {
+                    inputDecimal(target.dataset.value);
+                    return;
+                }
+
+                if (target.dataset.type === 'operator') {
+                    handleOperator(target.dataset.value);
+                    return;
+                }
+            });
+
+            // Initialize display
+            updateDisplay();
         });
-
-        document.querySelectorAll('.btn.operator').forEach(button => {
-            if (button.id !== 'sqrt' && button.id !== 'percent') {
-                button.addEventListener('click', () => chooseOperator(button.textContent));
-            }
-        });
-
-        document.getElementById('equals').addEventListener('click', calculate);
-        document.getElementById('clear').addEventListener('click', clearCalculator);
-        document.getElementById('decimal').addEventListener('click', appendDecimal);
-        document.getElementById('sqrt').addEventListener('click', calculateSquareRoot);
-        document.getElementById('percent').addEventListener('click', calculatePercentage);
-
-        // Add event listeners for new memory buttons
-        document.getElementById('mc').addEventListener('click', clearMemory);
-        document.getElementById('mr').addEventListener('click', recallMemory);
-        document.getElementById('m-plus').addEventListener('click', addToMemory);
-        document.getElementById('m-minus').addEventListener('click', subtractFromMemory);
-
-        updateDisplay();
     </script>
 </body>
 </html>
